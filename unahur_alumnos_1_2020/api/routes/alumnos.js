@@ -8,9 +8,25 @@ router.get("/", (req, res) => {
   .findAll({
     attributes: ["id","nombre","apellido","email","fechaNacimiento","id_carrera"],
       
-      /////////se agrega la asociacion 
       include:[{as:'Carrera-Inscripta', model:models.carrera, attributes: ["id","nombre"]}]
-      ////////////////////////////////
+    })
+    .then(alumno => res.send(alumno))
+    .catch(() => res.sendStatus(500));
+});
+
+router.get("/pag", (req, res) => {
+  console.log("Esto es un mensaje para ver en consola");
+  //recibo los valores
+  const pagina = parseInt(req.query.paginaActual)
+  const cant = parseInt(req.query.cantidadAVer)
+  const inicio = (pagina-1)*cant
+  //Los convierto en números para usar
+  models.alumno
+  .findAll({
+    offset: inicio,
+    limit: cant,
+    attributes: ["id","nombre","apellido","email","fechaNacimiento","id_carrera"],
+      include:[{as:'Carrera-Inscripta', model:models.carrera, attributes: ["id","nombre"]}]
     })
     .then(alumno => res.send(alumno))
     .catch(() => res.sendStatus(500));

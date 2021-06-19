@@ -7,13 +7,28 @@ router.get("/", (req, res) => {
   models.materia
   .findAll({
     attributes: ["id","nombre","id_carrera"],
-      
-      /////////se agrega la asociacion 
       include:[{as:'Carrera-Relacionada', model:models.carrera, attributes: ["id","nombre"]}]
-      ////////////////////////////////
     })
     .then(materia => res.send(materia))
     .catch(() => res.sendStatus(500));
+});
+
+router.get("/pag", (req, res) => {
+  console.log("Esto es un mensaje para ver en consola");
+  //recibo los valores
+  const pagina = parseInt(req.query.paginaActual)
+  const cant = parseInt(req.query.cantidadAVer)
+  const inicio = (pagina-1)*cant
+  //Los convierto en números para usar
+  models.materia
+  .findAll({
+    offset: inicio,
+    limit: cant,
+    attributes: ["id","nombre","id_carrera"],
+      include:[{as:'Carrera-Relacionada', model:models.carrera, attributes: ["id","nombre"]}]
+    })
+  .then(materia => res.send(materia))
+  .catch(() => res.sendStatus(500));
 });
 
 router.post("/", (req, res) => {

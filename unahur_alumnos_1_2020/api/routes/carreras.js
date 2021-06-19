@@ -12,6 +12,23 @@ router.get("/", (req, res) => {
     .catch(() => res.sendStatus(500));
 });
 
+router.get("/pag", (req, res) => {
+  console.log("Esto es un mensaje para ver en consola");
+  //recibo los valores
+  const pagina = parseInt(req.query.paginaActual)
+  const cant = parseInt(req.query.cantidadAVer)
+  const inicio = (pagina-1)*cant
+  //Los convierto en números para usar
+  models.carrera
+    .findAll({
+      offset: inicio,
+      limit: cant,
+      attributes: ["id", "nombre"]
+    })
+    .then(carreras => res.send(carreras))
+    .catch(() => res.sendStatus(500));
+});
+
 router.post("/", (req, res) => {
   models.carrera
     .create({ nombre: req.body.nombre })
